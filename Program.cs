@@ -14,7 +14,7 @@ namespace PROG2APOEQ1
         public int NumberIngredients { get; set; }   
         public string[] IngredientName {  get; set; }
         public float[] IngredientQuant {  get; set; }
-        public float[] OrigINgredientQuant { get; set; }
+        public float[] OrigIngredientQuant { get; set; }
         public string[] Ingredientmeasure {  get; set; }
         public int NumberSteps { get; set; }    
         public string[] StepDescriptions { get; set; }
@@ -28,7 +28,7 @@ namespace PROG2APOEQ1
             NumberIngredients = int.Parse(Console.ReadLine());
             IngredientName = new string[NumberIngredients];
             IngredientQuant = new float[NumberIngredients];
-            OrigINgredientQuant = new float[NumberIngredients];//the OrigIngredentQuant varible is only used in the ResetQuant Method and is made equal to the INgredientQuant varible in this constructor
+            OrigIngredientQuant = new float[NumberIngredients];//the OrigIngredentQuant varible is only used in the ResetQuant Method and is made equal to the INgredientQuant varible in this constructor
             Ingredientmeasure = new string[NumberIngredients];
             for (int i = 0; i < NumberIngredients; i++)
             {
@@ -36,7 +36,7 @@ namespace PROG2APOEQ1
                 IngredientName[i] = Console.ReadLine();
                 Console.WriteLine("How much (a number) of ingredient " + (i + 1)+" is used");
                 IngredientQuant[i] = int.Parse(Console.ReadLine());
-                OrigINgredientQuant[i] = IngredientQuant[i];
+                OrigIngredientQuant[i] = IngredientQuant[i];
                 Console.WriteLine("What is the measurment used for ingredient " + (i + 1));
                 Ingredientmeasure[i] = Console.ReadLine(); 
             }
@@ -54,11 +54,11 @@ namespace PROG2APOEQ1
         //---------------------------- End of Recipe Constructors -------------------------
         //---------------------------- Recipe Mehthods -------------------------------------
 
-        //Recipe Display Method
-        // the display method will print the full recipe in a pleasent format
+        //DisplayRecipe Method
+        //Will print the full recipe in a pleasent format
         public void DisplayRecipe() 
         {
-            Console.WriteLine("TEST");
+            Console.WriteLine();
             Console.WriteLine(RecipeName);
             Console.WriteLine("Ingredient List:");
             for (int i = 0;i < NumberIngredients; i++)
@@ -72,7 +72,16 @@ namespace PROG2APOEQ1
             }
             
         }
-        // End of Recipe DIsplay Method
+        // End of DisplayRecipe Method
+
+        //ResetQuant method
+        //Sets the QUantity values to the inital ones input (relevant after the use of the scale QUant method)
+        public void ResetQuant()
+        {
+            IngredientQuant = OrigIngredientQuant;
+        }
+        //End of ResetQuant method
+        
 
         //---------------------------- End of Recipe Methods ------------------------------
 
@@ -108,14 +117,17 @@ namespace PROG2APOEQ1
                 }else if( inpt =="Reset Quant")
                 {
                     //The Reset Quant Comand calls up the rest funciton
+                    recipe.ResetQuant();
 
                 }else if(inpt == "Clear")
                 {
                     //The Clear Comand calls up the clear function
+                    recipe.CreateRecipe();
 
                 }else if (inpt == "Exit")
                 {
                     //the Exit comand Exits the porgram
+                    Console.WriteLine("Shutting down");
                 }
                 else
                 {
