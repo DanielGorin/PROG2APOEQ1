@@ -146,6 +146,11 @@ namespace PROG2APOEQ1
                 if (inpt == "Help")
                 {
                     //The help comand describes what each of the other functions does
+                    Console.WriteLine("Display -> Will output your recipe in a structured format");
+                    Console.WriteLine("Scale Quant -> will prompt you what factor yu would like to scale by the ingredient quantities will then be scaled by the selected factor and the instructions will be searched and updated to match");
+                    Console.WriteLine("Rese Quant -> will reset the ingredeint quantities and the instructions back to their original values");
+                    Console.WriteLine("Cear -> Will wipe your recipe and prompt you to create a new one");
+                    Console.WriteLine("Exit -> Will Shutdown the program closing the comand line interface");
 
                 }else if (inpt == "Display")
                 {
