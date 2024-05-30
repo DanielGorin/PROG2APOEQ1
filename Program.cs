@@ -10,7 +10,7 @@ using System.Xml.Linq;
 namespace PROG2APOEQ1
 {
     delegate void CalDelegate();
-    internal class IngredientDetails//this class will store all information for each of the ingredietns
+    public class IngredientDetails//this class will store all information for each of the ingredietns
     {
         //------------------------Ingredient Properties--------------------------------
         public string Name { get; set; }
@@ -37,7 +37,7 @@ namespace PROG2APOEQ1
             return otpt;
         }
     }
-    internal class Recipe
+    public class Recipe
     {
         //------------------------Recipe Properties-------------------------------------
         public string recipeName { get; set; }
