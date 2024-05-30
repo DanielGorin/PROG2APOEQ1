@@ -343,6 +343,12 @@ namespace PROG2APOEQ1
                 }else if (inpt.ToLower() == "recipe list")
                 {
                     //the reipe list command displayes all the names of the recipes in the system
+                    var sortesDict = Book.OrderBy(KeyValuePair => KeyValuePair.Key);
+                    Console.WriteLine("Recipe List:");
+                    foreach(var alph in sortesDict)
+                    {
+                        Console.WriteLine($"{alph.Key}");
+                    }
 
                 }
                 else if (inpt.ToLower() == "view recipe")
