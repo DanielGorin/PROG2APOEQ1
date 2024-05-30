@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
+using System.Xml.Linq;
 
 namespace PROG2APOEQ1
 {
@@ -17,13 +18,21 @@ namespace PROG2APOEQ1
         public float[] OrigIngredientQuant { get; set; }
         public string[] Ingredientmeasure {  get; set; }
         public int NumberSteps { get; set; }    
-        public string[] StepDescriptions { get; set; }
+        public string[] Steps { get; set; }
         //------------------------ End of Recipe Properties-------------------------------------
         public void CreateRecipe()
         {
         //------------------------ Recipe Constructos -----------------------------------------
             Console.WriteLine("What is the title of your recipe?");
-            RecipeName = Console.ReadLine();
+            string quant;
+            try
+            {
+                RecipeName = Console.ReadLine();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("ERROR - " + ex.Message);
+            }
             Console.WriteLine("How many ingredients are in your recipe?");
             NumberIngredients = int.Parse(Console.ReadLine());
             IngredientName = new string[NumberIngredients];
@@ -33,20 +42,42 @@ namespace PROG2APOEQ1
             for (int i = 0; i < NumberIngredients; i++)
             {
                 Console.WriteLine("What is the name of ingredient " + (i+1));
-                IngredientName[i] = Console.ReadLine();
-                Console.WriteLine("How much (a number) of ingredient " + (i + 1)+" is used (use a full stop i decimals Eg 5.55)");
-                IngredientQuant[i] = float.Parse(Console.ReadLine(), CultureInfo.InvariantCulture.NumberFormat);
+                try
+                {
+                    IngredientName[i] = Console.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR - " + ex.Message);
+                }
+                Console.WriteLine("How much (a number) of ingredient " + (i + 1)+" is used.");
+                try
+                {
+                    quant = Console.ReadLine().Replace(",",".");
+                    IngredientQuant[i] = float.Parse(quant, CultureInfo.InvariantCulture.NumberFormat);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR - " + ex.Message);
+                }
                 OrigIngredientQuant[i] = IngredientQuant[i];
                 Console.WriteLine("What is the unit of measurment used for ingredient " + (i + 1));
-                Ingredientmeasure[i] = Console.ReadLine(); 
+                try
+                {
+                    Ingredientmeasure[i] = Console.ReadLine();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("ERROR - " + ex.Message);
+                }
             }
             Console.WriteLine("how many steps are there in your recipe?");
             NumberSteps = int.Parse(Console.ReadLine());
-            StepDescriptions = new string[NumberSteps];
+            Steps = new string[NumberSteps];
             for (int j = 0;  j < NumberSteps; j++)
             {
                 Console.WriteLine("what is the instruction for step " + (j+1)+ " (use a comma in decimals Eg 5,55)");
-                StepDescriptions[j] = Console.ReadLine();
+                Steps[j] = Console.ReadLine();
             }
             Console.WriteLine("Recipe titled " + RecipeName + " succesfully created.");
         }
@@ -66,7 +97,7 @@ namespace PROG2APOEQ1
             Console.WriteLine("Recipe instructions:");
             for (int j = 0;j < NumberSteps; j++)
             {
-                Console.WriteLine((j+1)+". " + StepDescriptions[j]);
+                Console.WriteLine((j+1)+". " + Steps[j]);
             } 
         }
         // End of DisplayRecipe Method
@@ -84,8 +115,8 @@ namespace PROG2APOEQ1
                 string settingnospace = ((IngredientQuant[i]*scale).ToString() + "" + Ingredientmeasure[i] + " of " + IngredientName[i]);
                 for (int j = 0; j < NumberSteps; j++)
                 {
-                    StepDescriptions[j]=StepDescriptions[j].Replace(seekingspace, settingspace);
-                    StepDescriptions[j]=StepDescriptions[j].Replace(seekingnospace, settingnospace);
+                    Steps[j]=Steps[j].Replace(seekingspace, settingspace);
+                    Steps[j]=Steps[j].Replace(seekingnospace, settingnospace);
                 }
                 IngredientQuant[i] *= scale;
             }
@@ -107,8 +138,8 @@ namespace PROG2APOEQ1
 
                 for (int j = 0; j < NumberSteps; j++)
                 {
-                    StepDescriptions[j]=StepDescriptions[j].Replace(seekingspace, settingspace);
-                    StepDescriptions[j]=StepDescriptions[j].Replace(seekingnospace, settingnospace);
+                    Steps[j]=Steps[j].Replace(seekingspace, settingspace);
+                    Steps[j]=Steps[j].Replace(seekingnospace, settingnospace);
                 }
             }
             IngredientQuant = OrigIngredientQuant;
@@ -124,55 +155,55 @@ namespace PROG2APOEQ1
             String inpt=""; //the input string will hold the text instructions the user inputs
             Recipe recipe = new Recipe();
             recipe.CreateRecipe();
-            while (inpt != "Exit")// This will loop until the user types the Exit Command at which point the program will end
+            while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
                 Console.WriteLine("Please use any of the following comands:");
-                Console.WriteLine("Help, Display, Scale Quant, Reset Quant, Clear or Exit");
+                Console.WriteLine("Help, Display, Scale, Reset Quant, Clear or Exit");
                 inpt = Console.ReadLine();
-                if (inpt == "Help")
+                if (inpt.ToLower() == "help")
                 {
                     //The help comand describes what each of the other functions does
                     Console.WriteLine("Display -> Will output your recipe in a structured format");
-                    Console.WriteLine("Scale Quant -> will prompt you what factor yu would like to scale by the ingredient quantities will then be scaled by the selected factor and the instructions will be searched and updated to match");
+                    Console.WriteLine("Scale -> will prompt you what factor yu would like to scale by the ingredient quantities will then be scaled by the selected factor and the instructions will be searched and updated to match");
                     Console.WriteLine("Rese Quant -> will reset the ingredeint quantities and the instructions back to their original values");
                     Console.WriteLine("Cear -> Will wipe your recipe and prompt you to create a new one");
                     Console.WriteLine("Exit -> Will Shutdown the program closing the comand line interface");
-                }else if (inpt == "Display")
+                }else if (inpt.ToLower() == "display")
                 {
                     //The display command calls up the dislay funciton
                     recipe.DisplayRecipe();
-                }else if(inpt == "Scale Quant")
+                }else if(inpt.ToLower() == "scale")
                 {
                     //The Scale Quant funciton prompts the user as to how much they want to scale the quantity of the ingredient and then calls up the scale function
                     Console.WriteLine("What factor would you like the quantity of ingredients to be scaled by (enter Half, Double or Triple)");
                     string txtscl = Console.ReadLine();
-                    if ((txtscl == "Half"))
+                    if ((txtscl.ToLower() == "half"))
                     {
                         recipe.ScaleQuant(0.5F);
                     }
-                    else if (txtscl == "Double")
+                    else if (txtscl.ToLower() == "double")
                     {
                         recipe.ScaleQuant(2);
                     }
-                    else if (txtscl == "Triple")
+                    else if (txtscl.ToLower() == "triple")
                     {
                         recipe.ScaleQuant(3);
                     }else
                     {
                         Console.WriteLine("That is not a valid scaling factor");
                     }
-                }else if( inpt =="Reset Quant")
+                }else if( inpt.ToLower() == "reset quant")
                 {
                     //The Reset Quant Comand calls up the rest funciton
                     recipe.ResetQuant();
 
-                }else if(inpt == "Clear")
+                }else if(inpt.ToLower() == "clear")
                 {
                     //The Clear Comand calls up the clear function
                     recipe.CreateRecipe();
 
-                }else if (inpt == "Exit")
+                }else if (inpt.ToLower() == "exit")
                 {
                     //the Exit comand Exits the porgram
                     Console.WriteLine("Shutting down");
