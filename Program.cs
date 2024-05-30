@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Runtime.Remoting.Channels;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 
 namespace PROG2APOEQ1
@@ -35,7 +36,7 @@ namespace PROG2APOEQ1
         public int CalTotal { get; set; }
         public List<string> Steps { get; set; }
         //------------------------ End of Recipe Properties-------------------------------------
-        public void CreateRecipe(string name, Dictionary<string, IngredientDetails> ings, int calTot, int numSteps, List<string> stps)
+        public void CreateRecipe(string name, Dictionary<string, IngredientDetails> ings, int calTot, List<string> stps)
         {
             //------------------------ Recipe Constructos -----------------------------------------
             RecipeName = name;
@@ -249,29 +250,59 @@ namespace PROG2APOEQ1
                     }
                 }
             }
-            //finalizes teh recipe
+            //finalizes the recipe
             Console.WriteLine("Recipe titled " + nam + " succesfully created.");
             Recipe HoldRecipe = new Recipe();
-            HoldRecipe.CreateRecipe(nam, );
+            HoldRecipe.CreateRecipe(nam, Ingredients, caltot,steps );
         }
         //--------------------------------------- End of User Recipe Mehtod ------------------------
         static void Main(string[] args)
         {
+            //Stores all the recipes
+            List<Recipe> Storage = new List<Recipe>();
+            //Creates some stock recipes to fill the system
+            IngredientDetails stockIngredientdetails = new IngredientDetails();
+            Dictionary<string, IngredientDetails> stockIngredients = new Dictionary<string, IngredientDetails>();
+            List<string> stockSteps = new List<string>();
+            Recipe stockRecipe = new Recipe();
+            //Stock Recipe One
+            stockIngredientdetails.CreateIngredient(100, 100, "g", 52, "fruit");
+            stockIngredients["Apple"] = stockIngredientdetails;
+            stockIngredientdetails.CreateIngredient(150, 150, "g", 134, "fruit");
+            stockIngredients["Banana"] = stockIngredientdetails;
+            stockIngredientdetails.CreateIngredient(100, 100, "g", 48, "fruit");
+            stockIngredients["Pineapple"] = stockIngredientdetails;
+            stockSteps.Add("Add the apple to a bowl");
+            stockSteps.Add("Add the banana to the bowl");
+            stockSteps.Add("Add the pineapple to the bowl");
+            stockSteps.Add("Mix all the ingredients and serve");
+            stockRecipe.CreateRecipe("Fruit Salad",stockIngredients,234,stockSteps);
+            Storage.Add(stockRecipe);
+            stockIngredientdetails.CreateIngredient(2, 2, "cups", 911, "dairy");
+            stockIngredients["Grated Cheese"] = stockIngredientdetails;
+            stockIngredientdetails.CreateIngredient(500, 500, "g", 1485, "starch");
+            stockIngredients["Cake"] = stockIngredientdetails;
+            stockSteps.Add("Melt the Cheese");
+            stockSteps.Add("Pour the melted cheese over the cake");
+            stockSteps.Add("Let it cool and serve");
+            stockRecipe.CreateRecipe("Cheese Cake", stockIngredients, 2396, stockSteps);
+            Storage.Add(stockRecipe);
+            //User interaction
             String inpt=""; //the input string will hold the text instructions the user inputs
-
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
                 Console.WriteLine("Please use any of the following comands:");
-                Console.WriteLine("Help, Display, Scale, Reset Quant, Clear or Exit");
+                Console.WriteLine("Help, Recipe List, View ('Recipe Name'), Add Recipe, Scale ('Recipe Name') Delete ('Recipe Name'), Exit");
                 inpt = Console.ReadLine();
                 if (inpt.ToLower() == "help")
                 {
                     //The help comand describes what each of the other functions does
-                    Console.WriteLine("Display -> Will output your recipe in a structured format");
-                    Console.WriteLine("Scale -> will prompt you what factor yu would like to scale by the ingredient quantities will then be scaled by the selected factor and the instructions will be searched and updated to match");
-                    Console.WriteLine("Rese Quant -> will reset the ingredeint quantities and the instructions back to their original values");
-                    Console.WriteLine("Cear -> Will wipe your recipe and prompt you to create a new one");
+                    Console.WriteLine("Recipe List -> will display an alphabetical list of all the recipes");
+                    Console.WriteLine("View ('Recipe Name') -> will display the selected recipe. The name in the brackets must match an existing recipe in the system");
+                    Console.WriteLine("Add Recipe -> will prompt you to add your own recipe to the system.");
+                    Console.WriteLine("Scale ('Recipe Name') -> will prompt you with options to scale the quantity of ingredients in the selected recipe. The name in the brackets must match an existing recipe in the system");
+                    Console.WriteLine("Delete ('Recipe Name') -> will remove the selected recipe from the system. The name in the brackets must match an existing recipe in the system");
                     Console.WriteLine("Exit -> Will Shutdown the program closing the comand line interface");
                 }else if (inpt.ToLower() == "display")
                 {
