@@ -323,12 +323,6 @@ namespace PROG2APOEQ1
             astockSteps.Add("Let it cool and serve");
             astockRecipe.CreateRecipe("cheese cake", astockIngredients, 2396, astockSteps);
             Book.Add("cheese cake",astockRecipe);
-            //testing
-            foreach (var rec in Book)
-            {
-                Console.WriteLine(rec.Key);
-                Console.WriteLine(rec.Value.recipeIngredients.Count.ToString());
-            }
             //User interaction
             String inpt=""; //the input string will hold the text instructions the user inputs
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
@@ -402,9 +396,22 @@ namespace PROG2APOEQ1
                     }*/
                 }else if( inpt.ToLower() == "delete recipe")
                 {
-                    //The Reset Quant Comand calls up the rest funciton
-                
-                }else if (inpt.ToLower() == "exit")
+                    //The delete recipe Comand removes a recipe from the book dictionary
+                    Console.WriteLine("What is the name of the recipe you would like to view");
+                    inpt = Console.ReadLine();
+                    if (Book.ContainsKey(inpt))
+                    {
+                        Book.Remove(inpt);
+                        Console.WriteLine(inpt+" Recipe succesfully Removed.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("that is not a recognized recipe name");
+                    }
+
+
+                }
+                else if (inpt.ToLower() == "exit")
                 {
                     //the Exit comand Exits the porgram
                     Console.WriteLine("Shutting down");
