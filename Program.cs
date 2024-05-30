@@ -88,45 +88,20 @@ namespace PROG2APOEQ1
         //sclaes the quantity of the ingredients by the desired factor
         public void ScaleQuant(float scale)
         {
-            /*for (int i = 0; i < NumberIngredients; i++)
+            foreach (var pair in recipeIngredients)
             {
-                //seekingspace and settingspace are for units such as cups or teaspoons Eg 6 cups of suger
-                string seekingspace = ((IngredientQuant[i]).ToString() + " " + IngredientMeasure[i] + " of " + IngredientName[i]);
-                string settingspace = ((IngredientQuant[i] * scale).ToString() + " " + IngredientMeasure[i] + " of " + IngredientName[i]);
-                //seekingnospace and settingnospace is for units such as kg or ml Eg 6Kg of cheese
-                string seekingnospace = ((IngredientQuant[i]).ToString() + "" + IngredientMeasure[i] + " of " + IngredientName[i]);
-                string settingnospace = ((IngredientQuant[i] * scale).ToString() + "" + IngredientMeasure[i] + " of " + IngredientName[i]);
-                for (int j = 0; j < NumberSteps; j++)
-                {
-                    Steps[j] = Steps[j].Replace(seekingspace, settingspace);
-                    Steps[j] = Steps[j].Replace(seekingnospace, settingnospace);
-                }
-                IngredientQuant[i] *= scale;
+                pair.Value.Quantity = (pair.Value.Quantity*scale);
             }
-            Console.WriteLine("Ingredient quantities scaled succesfully");*/
         }
         //end of the ScaleQuant method
         //ResetQuant method
         //Sets the QUantity values to the inital ones input (relevant after the use of the scale QUant method)
         public void ResetQuant()
-        {/*
-            for (int i = 0; i < NumberIngredients; i++)
+        {
+            foreach (var pair in recipeIngredients)
             {
-                //seekingspace and settingspace are for units such as cups or teaspoons Eg 6 cups of suger
-                string seekingspace = ((IngredientQuant[i]).ToString() + " " + Ingredientmeasure[i] + " of " + IngredientName[i]);
-                string settingspace = ((OrigIngredientQuant[i]).ToString() + " " + Ingredientmeasure[i] + " of " + IngredientName[i]);
-                //seekingnospace and settingnospace is for units such as kg or ml Eg 6Kg of cheese
-                string seekingnospace = ((IngredientQuant[i]).ToString() + "" + Ingredientmeasure[i] + " of " + IngredientName[i]);
-                string settingnospace = ((OrigIngredientQuant[i]).ToString() + "" + Ingredientmeasure[i] + " of " + IngredientName[i]);
-
-                for (int j = 0; j < NumberSteps; j++)
-                {
-                    Steps[j] = Steps[j].Replace(seekingspace, settingspace);
-                    Steps[j] = Steps[j].Replace(seekingnospace, settingnospace);
-                }
+                pair.Value.Quantity = pair.Value.origQuantity;
             }
-            IngredientQuant = OrigIngredientQuant;
-            Console.WriteLine("Quantities have been reset");*/
         }
         //End of ResetQuant method
         //---------------------------- End of Recipe Methods ------------------------------
@@ -325,12 +300,13 @@ namespace PROG2APOEQ1
             Book.Add("cheese cake",astockRecipe);
             //User interaction
             String inpt=""; //the input string will hold the text instructions the user inputs
+            string lok = "";//used in conjunction with inpt when a previous user entry is needed
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
                 Console.WriteLine("Please use any of the following comands:");
                 Console.WriteLine("Help, Recipe List, View Recipe, Add Recipe, Scale ('Recipe Name') Delete ('Recipe Name'), Exit");
-                inpt = Console.ReadLine();
+                inpt = Console.ReadLine().ToLower();
                 if (inpt.ToLower() == "help")
                 {
                     //The help comand describes what each of the other functions does
@@ -356,7 +332,7 @@ namespace PROG2APOEQ1
                     //The view recipe command allows the suer to view a specific recipe
                     CalDelegate caldelegate = new CalDelegate(HighCal);
                     Console.WriteLine("What is the name of the recipe you would like to view");
-                    inpt = Console.ReadLine();
+                    inpt = Console.ReadLine().ToLower();
                     if (Book.ContainsKey(inpt))
                     {
                         printRecipe = Book[inpt];
@@ -382,6 +358,37 @@ namespace PROG2APOEQ1
                 }
                 else if(inpt.ToLower() == "scale recipe")
                 {
+                    Console.WriteLine("What is the name of the recipe you would like to scale");
+                    inpt = Console.ReadLine().ToLower();
+                    if (Book.ContainsKey(inpt))
+                    {
+                        lok = inpt;
+                        Console.WriteLine("To what degree wuld you like to scale the ingredients (Half/Double/Triple/Reset)");
+                        inpt = Console.ReadLine().ToLower();
+                        if (inpt == "half")
+                        {
+                            Book[lok].ScaleQuant(0.5f);
+                        }else if (inpt == "double")
+                        {
+                            Book[lok].ScaleQuant(2f);
+                        }
+                        else if (inpt == "triple")
+                        {
+                            Book[lok].ScaleQuant(3f);
+                        }
+                        else if (inpt == "reset")
+                        {
+                            Book[lok].ResetQuant();
+                        }
+                        else
+                        {
+                            Console.WriteLine("that is not a recognized scaling factor");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("that is not a recognized recipe name");
+                    }
                     //The Scale Quant funciton prompts the user as to how much they want to scale the quantity of the ingredient and then calls up the scale function
                     /*Console.WriteLine("What factor would you like the quantity of ingredients to be scaled by (enter Half, Double or Triple)");
                     string txtscl = Console.ReadLine();
@@ -400,11 +407,12 @@ namespace PROG2APOEQ1
                     {
                         Console.WriteLine("That is not a valid scaling factor");
                     }*/
-                }else if( inpt.ToLower() == "delete recipe")
+                }
+                else if( inpt.ToLower() == "delete recipe")
                 {
                     //The delete recipe Comand removes a recipe from the book dictionary
                     Console.WriteLine("What is the name of the recipe you would like to view");
-                    inpt = Console.ReadLine();
+                    inpt = Console.ReadLine().ToLower();
                     if (Book.ContainsKey(inpt))
                     {
                         Book.Remove(inpt);
