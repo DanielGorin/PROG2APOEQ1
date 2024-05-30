@@ -142,6 +142,9 @@ namespace PROG2APOEQ1
         //This method interacts with the user via the console to put together a Recipe
         public static Recipe userRecipe()
         {
+            Dictionary<string, IngredientDetails> Ingredients = new Dictionary<string, IngredientDetails>();
+
+
             //variables used in the input process
             bool err = true;//used for the advanced error handling do identify whether an error occured
             bool cont = true;//used to continue or halt adding new ingredients
@@ -156,10 +159,6 @@ namespace PROG2APOEQ1
             int cal = 0;
             string fgroup = "";
             int caltot = 0;
-            //creates the instance of the ingredient class
-            IngredientDetails holder = new IngredientDetails();
-            //creates the ingredient collection
-            Dictionary<string, IngredientDetails> Ingredients = new Dictionary<string, IngredientDetails>();
             // name input
             Console.WriteLine("What is the title of your recipe?");
             nam = Console.ReadLine().ToLower();
@@ -218,13 +217,14 @@ namespace PROG2APOEQ1
                 Console.WriteLine("What food group is the ingredient in?");
                 fgroup = Console.ReadLine();
                 //creates an instance of the ingredientdetails class
+                IngredientDetails holder = new IngredientDetails();
                 holder.CreateIngredient(ingname, ingquant, origingquant, meas, cal, fgroup);
                 //Adds to the ingredients collection
                 Ingredients.Add(ingname,holder);
                 //adds to the calory total
                 caltot += cal;
                 //Determines wheather there are more ingredients
-                Console.WriteLine("Would You like to add another ingredient? ()");
+                Console.WriteLine("Would You like to add another ingredient? (yes/no)");
                 legit = false;
                 while (legit==false) {
                     ans = Console.ReadLine().ToLower();
@@ -253,7 +253,7 @@ namespace PROG2APOEQ1
                 Console.WriteLine("Please input the instructions for the next step in the recipe");
                 steps.Add(Console.ReadLine());
                 Console.WriteLine("That was step "+steps.Count);
-                Console.WriteLine("Would You like to add another ingredient? ()");
+                Console.WriteLine("Would You like to add another step? (yes/no)");
                 legit = false;
                 while (legit == false)
                 {
@@ -363,7 +363,7 @@ namespace PROG2APOEQ1
                         printRecipe.DisplayRecipe();
                         if (Book[inpt].recipeCalTotal > 300)
                         {
-                            caldelegate();
+                            caldelegate();//warns user about high caloric intake
                         }
                     }
                     else
