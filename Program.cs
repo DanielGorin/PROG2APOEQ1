@@ -31,29 +31,16 @@ namespace PROG2APOEQ1
     {
         //------------------------Recipe Properties-------------------------------------
         public string RecipeName { get; set; }
-        public int NumberIngredients { get; set; }
-        public string[] IngredientName { get; set; }
-        public float[] IngredientQuant { get; set; }
-        public float[] OrigIngredientQuant { get; set; }
-        public string[] IngredientMeasure { get; set; }
-        public int[] IngredientCal { get; set; }
+        public Dictionary<string, IngredientDetails> Ingredients { get; set; }
         public int CalTotal { get; set; }
-        public string[] IngredientFoodGroup { get; set; }
-        public int NumberSteps { get; set; }
-        public string[] Steps { get; set; }
+        public List<string> Steps { get; set; }
         //------------------------ End of Recipe Properties-------------------------------------
-        public void CreateRecipe(string name, int numIng, string[] ingName, float[] ingQuant,float[] origingQuant, string[] ingMeas, int[] ingCal, int calTot, string[] ingFood, int numSteps, string[] stps)
+        public void CreateRecipe(string name, Dictionary<string, IngredientDetails> ings, int calTot, int numSteps, List<string> stps)
         {
             //------------------------ Recipe Constructos -----------------------------------------
             RecipeName = name;
-            NumberIngredients = numIng;
-            IngredientName = ingName;
-            IngredientQuant = ingQuant;
-            IngredientMeasure = ingMeas;
-            IngredientCal = ingCal;
+            Ingredients = ings;
             CalTotal = calTot;
-            IngredientFoodGroup = ingFood;
-            NumberSteps = numSteps;
             Steps = stps;
         }
         //---------------------------- End of Recipe Constructors -------------------------
@@ -130,104 +117,140 @@ namespace PROG2APOEQ1
         public void userRecipe()
         {
             //variables used in the input process
-            bool err = true;
-            string quant;
+            bool err = true;//used for the advanced error handling do identify whether an error occured
+            bool cont = true;//used to continue or halt adding new ingredients
+            bool legit = true;//ensures users input legitimate replies to queries
+            string ans;//stores the answer to queries
             //variables used to hold input data
-            string nam;
-            int numIng = 0;
+            string nam = "";
+            string ingname = "";
+            float ingquant = 0;
+            float origingquant = 0;
+            string meas = "";
+            int cal = 0;
+            string fgroup = "";
+            int caltot = 0;
+            //creates the instance of the ingredient class
+            IngredientDetails holder = new IngredientDetails();
+            //creates the ingredient collection
+            Dictionary<string, IngredientDetails> Ingredients = new Dictionary<string, IngredientDetails>();
             // name input
             Console.WriteLine("What is the title of your recipe?");
             nam = Console.ReadLine();
-            //number of ingredients input
-            err = true;
-            while (err) {
-                try
+            //creates the instructions collection
+            List<string> steps = new List<string>();
+            cont = true;
+            while (cont) {
+                //input name of ingredient
+                //prompting text:
+                Console.WriteLine("what is the name of the ingredient?");
+                //input:
+                ingname = Console.ReadLine();
+                err = true;
+                while (err)
                 {
-                    err = false;
-                    //prompting text:
-                    Console.WriteLine("How many ingredients are in your recipe?");
-                    //potential error input:
-                    numIng = int.Parse(Console.ReadLine());
+                    try
+                    {
+                        err = false;
+                        //prompting text:
+                        Console.WriteLine("what is the quantity needed of the ingredient?");
+                        //potential error input:
+                        ingquant = float.Parse(Console.ReadLine().Replace(",","."));
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("ERROR - " + ex.Message);
+                        err = true;
+                    }
+                    origingquant = ingquant;
                 }
-                catch (Exception ex)
+                //input measuremeant for ingredient
+                //prompting text:
+                Console.WriteLine("what is the measuremeant used for the ingredient");
+                //input:
+                meas = Console.ReadLine();
+                //input calories in the ingredient
+                err = true;
+                while (err)
                 {
-                    Console.WriteLine("ERROR - " + ex.Message);
-                    err = true;
-                }
-            }
-            //creating the ingredients list
-            // Each ingredient will be formed of the folloeing
-            // name - quantity - origianl quantity - measurment - calories - foodgroup
-            Dictionary<string, float, float, string, int, string> = new Dictionary<string, float, float, string, int, string>()
+                    try
+                    {
+                        err = false;
+                        //prompting text:
+                        Console.WriteLine("How many calories are in this ingredient?");
+                        //potential error input:
+                        cal = int.Parse(Console.ReadLine());
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("ERROR - " + ex.Message);
+                        err = true;
+                    }
 
-            //setting size of arrays:
-            string[] ingNam = new string[numIng];
-            float[] ingQuant = new float[numIng];
-            float[] origingQuant = new float[numIng];//the OrigIngredentQuant varible is only used in the ResetQuant Method and is made equal to the INgredientQuant varible in this constructor
-            string[] ingMeas = new string[numIng];
-            int[] ingCal = new int[numIng];
-            string[] ingFodd = new string[numIng];
-            //number of ingredients input
-            err = true;
-            while (err)
+                }
+                //input what food group the ingredient is in
+                Console.WriteLine("What food group is the ingredient in?");
+                fgroup = Console.ReadLine();
+                //creates an instance of the ingredientdetails class
+                holder.CreateIngredient(ingquant, origingquant, meas, cal, fgroup);
+                //Adds to the ingredients collection
+                Ingredients[nam] = holder;
+                //adds to the calory total
+                caltot += cal;
+                //Determines wheather there are more ingredients
+                Console.WriteLine("Would You like to add another ingredient? ()");
+                legit = false;
+                while (legit==false) {
+                    ans = Console.ReadLine().ToLower();
+                    if (ans == "yes")
+                    {
+                        cont = true;
+                        legit = true;
+                    }else if (ans == "no")
+                    {
+                        cont = false;
+                        legit = true;
+                    }
+                    else
+                    {
+                        legit = false;
+                        Console.WriteLine("That was not a legitimate reponse. Please input yes to continue and no to stop adding ingredients.");
+                    }
+                }
+
+
+            }
+            //adds the steps to the recipe
+            cont = true;
+            while (cont)
             {
-                try
+                Console.WriteLine("Please input the instructions for the next step in the recipe");
+                steps.Add(Console.ReadLine());
+                Console.WriteLine("That was step "+steps.Count);
+                Console.WriteLine("Would You like to add another ingredient? ()");
+                legit = false;
+                while (legit == false)
                 {
-                    err = false;
-                    //prompting text:
-
-                    //potential error input:
-
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine("ERROR - " + ex.Message);
-                    err = true;
+                    ans = Console.ReadLine().ToLower();
+                    if (ans == "yes")
+                    {
+                        cont = true;
+                        legit = true;
+                    }
+                    else if (ans == "no")
+                    {
+                        cont = false;
+                        legit = true;
+                    }
+                    else
+                    {
+                        legit = false;
+                        Console.WriteLine("That was not a legitimate reponse. Please input yes to continue and no to stop adding steps.");
+                    }
                 }
             }
-            //loops through every ingredient in the recipe filling in the various
-                for (int i = 0; i < numIng; i++)
-                {
-                    Console.WriteLine("What is the name of ingredient " + (i+1));
-                    try
-                    {
-                        IngredientName[i] = Console.ReadLine();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("ERROR - " + ex.Message);
-                    }
-                    Console.WriteLine("How much (a number) of ingredient " + (i + 1)+" is used.");
-                    try
-                    {
-                        quant = Console.ReadLine().Replace(",",".");
-                        IngredientQuant[i] = float.Parse(quant, CultureInfo.InvariantCulture.NumberFormat);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("ERROR - " + ex.Message);
-                    }
-                    OrigIngredientQuant[i] = IngredientQuant[i];
-                    Console.WriteLine("What is the unit of measurment used for ingredient " + (i + 1));
-                    try
-                    {
-                        Ingredientmeasure[i] = Console.ReadLine();
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("ERROR - " + ex.Message);
-                    }
-                }
-                Console.WriteLine("how many steps are there in your recipe?");
-                NumberSteps = int.Parse(Console.ReadLine());
-                Steps = new string[NumberSteps];
-                for (int j = 0;  j < NumberSteps; j++)
-                {
-                    Console.WriteLine("what is the instruction for step " + (j+1)+ " (use a comma in decimals Eg 5,55)");
-                    Steps[j] = Console.ReadLine();
-                }
-                Console.WriteLine("Recipe titled " + RecipeName + " succesfully created.");
-                
+            //finalizes teh recipe
+            Console.WriteLine("Recipe titled " + nam + " succesfully created.");
             Recipe HoldRecipe = new Recipe();
             HoldRecipe.CreateRecipe(nam, );
         }
@@ -235,8 +258,7 @@ namespace PROG2APOEQ1
         static void Main(string[] args)
         {
             String inpt=""; //the input string will hold the text instructions the user inputs
-            Recipe recipe = new Recipe();
-            recipe.CreateRecipe();
+
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
