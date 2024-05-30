@@ -9,9 +9,11 @@ using System.Xml.Linq;
 
 namespace PROG2APOEQ1
 {
-    internal class IngredientDetails//this class will store all the non Key values for the ingredients (everything but the name)
+    delegate void CalDelegate();
+    internal class IngredientDetails//this class will store all information for each of the ingredietns
     {
         //------------------------Ingredient Properties--------------------------------
+        public string Name { get; set; }   
         public float Quantity { get; set; }
         public float origQuantity { get; set; }
         public string Measurement {  get; set; }
@@ -19,30 +21,37 @@ namespace PROG2APOEQ1
         public string foodGroup { get; set; }
         //------------------------ End of INgredient Properties -------------------------
         //------------------------ INgredient COnstructor -------------------------------
-        public void CreateIngredient(float quant, float origquant, string meas, int cal, string group)
+        public void CreateIngredient(string nam, float quant, float origquant, string meas, int cal, string group)
         {
+            Name = nam;
             Quantity = quant;
             origQuantity = origquant;
             Measurement = meas;
             Calories = cal;
             foodGroup = group;
         }
+        //----------------------- end of ingredient constructor ----------------------------
+        public string display()
+        {
+            string otpt = (Quantity.ToString() + " " + Measurement + " of " + Name + ". This is "+Calories.ToString()+ " calories in the " + foodGroup+ " food group." );
+            return otpt;
+        }
     }
     internal class Recipe
     {
         //------------------------Recipe Properties-------------------------------------
-        public string RecipeName { get; set; }
-        public Dictionary<string, IngredientDetails> Ingredients { get; set; }
-        public int CalTotal { get; set; }
-        public List<string> Steps { get; set; }
+        public string recipeName { get; set; }
+        public Dictionary<string, IngredientDetails> recipeIngredients { get; set; }
+        public int recipeCalTotal { get; set; }
+        public List<string> recipeSteps { get; set; }
         //------------------------ End of Recipe Properties-------------------------------------
         public void CreateRecipe(string name, Dictionary<string, IngredientDetails> ings, int calTot, List<string> stps)
         {
             //------------------------ Recipe Constructos -----------------------------------------
-            RecipeName = name;
-            Ingredients = ings;
-            CalTotal = calTot;
-            Steps = stps;
+            recipeName = name;
+            recipeIngredients = ings;
+            recipeCalTotal = calTot;
+            recipeSteps = stps;
         }
         //---------------------------- End of Recipe Constructors -------------------------
         //---------------------------- Recipe Mehthods -------------------------------------
@@ -50,25 +59,36 @@ namespace PROG2APOEQ1
         //Will print the full recipe in a pleasent format
         public void DisplayRecipe()
         {
+
+            int count = 0;
             Console.WriteLine();
-            Console.WriteLine(RecipeName);
+            Console.WriteLine(recipeName);
             Console.WriteLine("Ingredient List:");
-            for (int i = 0; i < NumberIngredients; i++)
+            foreach (var pair in recipeIngredients)
             {
-                Console.WriteLine((i + 1) + ". " + IngredientQuant[i] + " " + IngredientMeasure[i] + " " + IngredientName[i]);
+                count ++;
+                Console.WriteLine(count.ToString()+". "+pair.Value.display());
             }
-            Console.WriteLine("Recipe instructions:");
-            for (int j = 0; j < NumberSteps; j++)
+            Console.WriteLine("Steps:");
+            count = 0;
+            foreach (var stp in recipeSteps)
             {
-                Console.WriteLine((j + 1) + ". " + Steps[j]);
+                count ++;
+                Console.WriteLine(count.ToString() + ". " + stp);
             }
+            Console.WriteLine("Calories:");
+            Console.WriteLine(recipeCalTotal.ToString());
+
+
+
+            
         }
         // End of DisplayRecipe Method
         //ScaleQuant method
         //sclaes the quantity of the ingredients by the desired factor
         public void ScaleQuant(float scale)
         {
-            for (int i = 0; i < NumberIngredients; i++)
+            /*for (int i = 0; i < NumberIngredients; i++)
             {
                 //seekingspace and settingspace are for units such as cups or teaspoons Eg 6 cups of suger
                 string seekingspace = ((IngredientQuant[i]).ToString() + " " + IngredientMeasure[i] + " of " + IngredientName[i]);
@@ -83,13 +103,13 @@ namespace PROG2APOEQ1
                 }
                 IngredientQuant[i] *= scale;
             }
-            Console.WriteLine("Ingredient quantities scaled succesfully");
+            Console.WriteLine("Ingredient quantities scaled succesfully");*/
         }
         //end of the ScaleQuant method
         //ResetQuant method
         //Sets the QUantity values to the inital ones input (relevant after the use of the scale QUant method)
         public void ResetQuant()
-        {
+        {/*
             for (int i = 0; i < NumberIngredients; i++)
             {
                 //seekingspace and settingspace are for units such as cups or teaspoons Eg 6 cups of suger
@@ -106,16 +126,21 @@ namespace PROG2APOEQ1
                 }
             }
             IngredientQuant = OrigIngredientQuant;
-            Console.WriteLine("Quantities have been reset");
+            Console.WriteLine("Quantities have been reset");*/
         }
         //End of ResetQuant method
         //---------------------------- End of Recipe Methods ------------------------------
     }
     internal class Program
     {
+        //high call method
+        public static void HighCal()
+        {
+            Console.WriteLine("this is considered a high calory recipe. Please be aware of your caloric intake.");
+        }
         //-------------------------------- Start of inputRecipe Method ------------------------
         //This method interacts with the user via the console to put together a Recipe
-        public void userRecipe()
+        public static Recipe userRecipe()
         {
             //variables used in the input process
             bool err = true;//used for the advanced error handling do identify whether an error occured
@@ -137,7 +162,7 @@ namespace PROG2APOEQ1
             Dictionary<string, IngredientDetails> Ingredients = new Dictionary<string, IngredientDetails>();
             // name input
             Console.WriteLine("What is the title of your recipe?");
-            nam = Console.ReadLine();
+            nam = Console.ReadLine().ToLower();
             //creates the instructions collection
             List<string> steps = new List<string>();
             cont = true;
@@ -146,7 +171,7 @@ namespace PROG2APOEQ1
                 //prompting text:
                 Console.WriteLine("what is the name of the ingredient?");
                 //input:
-                ingname = Console.ReadLine();
+                ingname = Console.ReadLine().ToLower();
                 err = true;
                 while (err)
                 {
@@ -193,9 +218,9 @@ namespace PROG2APOEQ1
                 Console.WriteLine("What food group is the ingredient in?");
                 fgroup = Console.ReadLine();
                 //creates an instance of the ingredientdetails class
-                holder.CreateIngredient(ingquant, origingquant, meas, cal, fgroup);
+                holder.CreateIngredient(ingname, ingquant, origingquant, meas, cal, fgroup);
                 //Adds to the ingredients collection
-                Ingredients[nam] = holder;
+                Ingredients.Add(ingname,holder);
                 //adds to the calory total
                 caltot += cal;
                 //Determines wheather there are more ingredients
@@ -254,64 +279,111 @@ namespace PROG2APOEQ1
             Console.WriteLine("Recipe titled " + nam + " succesfully created.");
             Recipe HoldRecipe = new Recipe();
             HoldRecipe.CreateRecipe(nam, Ingredients, caltot,steps );
+            return HoldRecipe;
         }
         //--------------------------------------- End of User Recipe Mehtod ------------------------
         static void Main(string[] args)
         {
+            //used to print recipes
+            Recipe printRecipe = new Recipe();
             //Stores all the recipes
-            List<Recipe> Storage = new List<Recipe>();
+            Dictionary<string, Recipe> Book = new Dictionary<string, Recipe>();
             //Creates some stock recipes to fill the system
-            IngredientDetails stockIngredientdetails = new IngredientDetails();
+            IngredientDetails stockIngredientdetailsone = new IngredientDetails();
+            IngredientDetails stockIngredientdetailstwo = new IngredientDetails();
+            IngredientDetails stockIngredientdetailsthree = new IngredientDetails();
+            IngredientDetails astockIngredientdetailsone = new IngredientDetails();
+            IngredientDetails astockIngredientdetailstwo = new IngredientDetails();
             Dictionary<string, IngredientDetails> stockIngredients = new Dictionary<string, IngredientDetails>();
+            Dictionary<string, IngredientDetails> astockIngredients = new Dictionary<string, IngredientDetails>();
             List<string> stockSteps = new List<string>();
+            List<string> astockSteps = new List<string>();
             Recipe stockRecipe = new Recipe();
+            Recipe astockRecipe = new Recipe();
             //Stock Recipe One
-            stockIngredientdetails.CreateIngredient(100, 100, "g", 52, "fruit");
-            stockIngredients["Apple"] = stockIngredientdetails;
-            stockIngredientdetails.CreateIngredient(150, 150, "g", 134, "fruit");
-            stockIngredients["Banana"] = stockIngredientdetails;
-            stockIngredientdetails.CreateIngredient(100, 100, "g", 48, "fruit");
-            stockIngredients["Pineapple"] = stockIngredientdetails;
+            stockIngredientdetailsone.CreateIngredient("apple",100, 100, "g", 52, "fruit");
+            stockIngredients.Add(stockIngredientdetailsone.Name, stockIngredientdetailsone);
+            stockIngredientdetailstwo.CreateIngredient("banana",150, 150, "g", 134, "fruit");
+            stockIngredients.Add(stockIngredientdetailstwo.Name, stockIngredientdetailstwo);
+            stockIngredientdetailsthree.CreateIngredient("pineapple",100, 100, "g", 48, "fruit");
+            stockIngredients.Add(stockIngredientdetailsthree.Name, stockIngredientdetailsthree);
             stockSteps.Add("Add the apple to a bowl");
             stockSteps.Add("Add the banana to the bowl");
             stockSteps.Add("Add the pineapple to the bowl");
             stockSteps.Add("Mix all the ingredients and serve");
-            stockRecipe.CreateRecipe("Fruit Salad",stockIngredients,234,stockSteps);
-            Storage.Add(stockRecipe);
-            stockIngredientdetails.CreateIngredient(2, 2, "cups", 911, "dairy");
-            stockIngredients["Grated Cheese"] = stockIngredientdetails;
-            stockIngredientdetails.CreateIngredient(500, 500, "g", 1485, "starch");
-            stockIngredients["Cake"] = stockIngredientdetails;
-            stockSteps.Add("Melt the Cheese");
-            stockSteps.Add("Pour the melted cheese over the cake");
-            stockSteps.Add("Let it cool and serve");
-            stockRecipe.CreateRecipe("Cheese Cake", stockIngredients, 2396, stockSteps);
-            Storage.Add(stockRecipe);
+            stockRecipe.CreateRecipe("fruit salad",stockIngredients,234,stockSteps);
+            Book.Add("fruit salad",stockRecipe);
+            //Stock Recipe two
+            astockIngredientdetailsone.CreateIngredient("grated Cheese",2, 2, "cups", 911, "dairy");
+            astockIngredients.Add(astockIngredientdetailsone.Name, astockIngredientdetailsone);
+            astockIngredientdetailstwo.CreateIngredient("cake",500, 500, "g", 1485, "starch");
+            astockIngredients.Add(astockIngredientdetailstwo.Name, astockIngredientdetailstwo);
+            astockSteps.Add("Melt the Cheese");
+            astockSteps.Add("Pour the melted cheese over the cake");
+            astockSteps.Add("Let it cool and serve");
+            astockRecipe.CreateRecipe("cheese cake", astockIngredients, 2396, astockSteps);
+            Book.Add("cheese cake",astockRecipe);
+            //testing
+            foreach (var rec in Book)
+            {
+                Console.WriteLine(rec.Key);
+                Console.WriteLine(rec.Value.recipeIngredients.Count.ToString());
+            }
             //User interaction
             String inpt=""; //the input string will hold the text instructions the user inputs
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
                 Console.WriteLine("Please use any of the following comands:");
-                Console.WriteLine("Help, Recipe List, View ('Recipe Name'), Add Recipe, Scale ('Recipe Name') Delete ('Recipe Name'), Exit");
+                Console.WriteLine("Help, Recipe List, View Recipe, Add Recipe, Scale ('Recipe Name') Delete ('Recipe Name'), Exit");
                 inpt = Console.ReadLine();
                 if (inpt.ToLower() == "help")
                 {
                     //The help comand describes what each of the other functions does
                     Console.WriteLine("Recipe List -> will display an alphabetical list of all the recipes");
-                    Console.WriteLine("View ('Recipe Name') -> will display the selected recipe. The name in the brackets must match an existing recipe in the system");
+                    Console.WriteLine("View Recipe -> you will be prompted to provide a recipe name the selected recipe will then be fully displayed");
                     Console.WriteLine("Add Recipe -> will prompt you to add your own recipe to the system.");
-                    Console.WriteLine("Scale ('Recipe Name') -> will prompt you with options to scale the quantity of ingredients in the selected recipe. The name in the brackets must match an existing recipe in the system");
-                    Console.WriteLine("Delete ('Recipe Name') -> will remove the selected recipe from the system. The name in the brackets must match an existing recipe in the system");
+                    Console.WriteLine("Scale Recipe -> you will be prompted to provide a recipe name then you will be prompted with options to scale the quantity of ingredients in the selected recipe");
+                    Console.WriteLine("Delete Recipe -> you will be prompted to provide a recipe name the selected recipe will then be removed from the system");
                     Console.WriteLine("Exit -> Will Shutdown the program closing the comand line interface");
-                }else if (inpt.ToLower() == "display")
+                }else if (inpt.ToLower() == "recipe list")
                 {
-                    //The display command calls up the dislay funciton
-                    recipe.DisplayRecipe();
-                }else if(inpt.ToLower() == "scale")
+                    //the reipe list command displayes all the names of the recipes in the system
+
+                }
+                else if (inpt.ToLower() == "view recipe")
+                {
+                    //The view recipe command allows the suer to view a specific recipe
+                    CalDelegate caldelegate = new CalDelegate(HighCal);
+                    Console.WriteLine("What is the name of the recipe you would like to view");
+                    inpt = Console.ReadLine();
+                    if (Book.ContainsKey(inpt))
+                    {
+                        printRecipe = Book[inpt];
+                        printRecipe.DisplayRecipe();
+                        if (Book[inpt].recipeCalTotal > 300)
+                        {
+                            caldelegate();
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine("that is not a recognized recipe name");
+                    }
+                    
+
+
+                }
+                else if (inpt.ToLower() == "add recipe")
+                {
+                    //The add recipe Command allows the user ot add their own recipe to the system
+                    stockRecipe = userRecipe();
+                    Book.Add(stockRecipe.recipeName,stockRecipe);
+                }
+                else if(inpt.ToLower() == "scale recipe")
                 {
                     //The Scale Quant funciton prompts the user as to how much they want to scale the quantity of the ingredient and then calls up the scale function
-                    Console.WriteLine("What factor would you like the quantity of ingredients to be scaled by (enter Half, Double or Triple)");
+                    /*Console.WriteLine("What factor would you like the quantity of ingredients to be scaled by (enter Half, Double or Triple)");
                     string txtscl = Console.ReadLine();
                     if ((txtscl.ToLower() == "half"))
                     {
@@ -327,17 +399,11 @@ namespace PROG2APOEQ1
                     }else
                     {
                         Console.WriteLine("That is not a valid scaling factor");
-                    }
-                }else if( inpt.ToLower() == "reset quant")
+                    }*/
+                }else if( inpt.ToLower() == "delete recipe")
                 {
                     //The Reset Quant Comand calls up the rest funciton
-                    recipe.ResetQuant();
-
-                }else if(inpt.ToLower() == "clear")
-                {
-                    //The Clear Comand calls up the clear function
-                    
-
+                
                 }else if (inpt.ToLower() == "exit")
                 {
                     //the Exit comand Exits the porgram
