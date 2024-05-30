@@ -13,10 +13,10 @@ namespace PROG2APOEQ1
     internal class IngredientDetails//this class will store all information for each of the ingredietns
     {
         //------------------------Ingredient Properties--------------------------------
-        public string Name { get; set; }   
+        public string Name { get; set; }
         public float Quantity { get; set; }
         public float origQuantity { get; set; }
-        public string Measurement {  get; set; }
+        public string Measurement { get; set; }
         public int Calories { get; set; }
         public string foodGroup { get; set; }
         //------------------------ End of INgredient Properties -------------------------
@@ -33,7 +33,7 @@ namespace PROG2APOEQ1
         //----------------------- end of ingredient constructor ----------------------------
         public string display()
         {
-            string otpt = (Quantity.ToString() + " " + Measurement + " of " + Name + ". This is "+Calories.ToString()+ " calories in the " + foodGroup+ " food group." );
+            string otpt = (Quantity.ToString() + " " + Measurement + " of " + Name + ". This is " + Calories.ToString() + " calories in the " + foodGroup + " food group.");
             return otpt;
         }
     }
@@ -61,27 +61,22 @@ namespace PROG2APOEQ1
         {
 
             int count = 0;
-            Console.WriteLine();
             Console.WriteLine(recipeName);
             Console.WriteLine("Ingredient List:");
             foreach (var pair in recipeIngredients)
             {
-                count ++;
-                Console.WriteLine(count.ToString()+". "+pair.Value.display());
+                count++;
+                Console.WriteLine(count.ToString() + ". " + pair.Value.display());
             }
             Console.WriteLine("Steps:");
             count = 0;
             foreach (var stp in recipeSteps)
             {
-                count ++;
+                count++;
                 Console.WriteLine(count.ToString() + ". " + stp);
             }
             Console.WriteLine("Calories:");
             Console.WriteLine(recipeCalTotal.ToString());
-
-
-
-            
         }
         // End of DisplayRecipe Method
         //ScaleQuant method
@@ -90,7 +85,7 @@ namespace PROG2APOEQ1
         {
             foreach (var pair in recipeIngredients)
             {
-                pair.Value.Quantity = (pair.Value.Quantity*scale);
+                pair.Value.Quantity = (pair.Value.Quantity * scale);
             }
         }
         //end of the ScaleQuant method
@@ -104,6 +99,16 @@ namespace PROG2APOEQ1
             }
         }
         //End of ResetQuant method
+        //Calculate total calories method
+        public int Totalcal()
+        {
+            int tot = 0;
+            foreach (var pair in recipeIngredients)
+            {
+                tot += pair.Value.Calories;
+            }
+            return tot;
+        }
         //---------------------------- End of Recipe Methods ------------------------------
     }
     internal class Program
@@ -140,7 +145,8 @@ namespace PROG2APOEQ1
             //creates the instructions collection
             List<string> steps = new List<string>();
             cont = true;
-            while (cont) {
+            while (cont)
+            {
                 //input name of ingredient
                 //prompting text:
                 Console.WriteLine("what is the name of the ingredient?");
@@ -155,7 +161,7 @@ namespace PROG2APOEQ1
                         //prompting text:
                         Console.WriteLine("what is the quantity needed of the ingredient?");
                         //potential error input:
-                        ingquant = float.Parse(Console.ReadLine().Replace(",","."));
+                        ingquant = float.Parse(Console.ReadLine().Replace(",", "."));
                     }
                     catch (Exception ex)
                     {
@@ -195,19 +201,21 @@ namespace PROG2APOEQ1
                 IngredientDetails holder = new IngredientDetails();
                 holder.CreateIngredient(ingname, ingquant, origingquant, meas, cal, fgroup);
                 //Adds to the ingredients collection
-                Ingredients.Add(ingname,holder);
+                Ingredients.Add(ingname, holder);
                 //adds to the calory total
                 caltot += cal;
                 //Determines wheather there are more ingredients
                 Console.WriteLine("Would You like to add another ingredient? (yes/no)");
                 legit = false;
-                while (legit==false) {
+                while (legit == false)
+                {
                     ans = Console.ReadLine().ToLower();
                     if (ans == "yes")
                     {
                         cont = true;
                         legit = true;
-                    }else if (ans == "no")
+                    }
+                    else if (ans == "no")
                     {
                         cont = false;
                         legit = true;
@@ -218,8 +226,6 @@ namespace PROG2APOEQ1
                         Console.WriteLine("That was not a legitimate reponse. Please input yes to continue and no to stop adding ingredients.");
                     }
                 }
-
-
             }
             //adds the steps to the recipe
             cont = true;
@@ -227,7 +233,7 @@ namespace PROG2APOEQ1
             {
                 Console.WriteLine("Please input the instructions for the next step in the recipe");
                 steps.Add(Console.ReadLine());
-                Console.WriteLine("That was step "+steps.Count);
+                Console.WriteLine("That was step " + steps.Count);
                 Console.WriteLine("Would You like to add another step? (yes/no)");
                 legit = false;
                 while (legit == false)
@@ -253,7 +259,7 @@ namespace PROG2APOEQ1
             //finalizes the recipe
             Console.WriteLine("Recipe titled " + nam + " succesfully created.");
             Recipe HoldRecipe = new Recipe();
-            HoldRecipe.CreateRecipe(nam, Ingredients, caltot,steps );
+            HoldRecipe.CreateRecipe(nam, Ingredients, caltot, steps);
             return HoldRecipe;
         }
         //--------------------------------------- End of User Recipe Mehtod ------------------------
@@ -276,36 +282,36 @@ namespace PROG2APOEQ1
             Recipe stockRecipe = new Recipe();
             Recipe astockRecipe = new Recipe();
             //Stock Recipe One
-            stockIngredientdetailsone.CreateIngredient("apple",100, 100, "g", 52, "fruit");
+            stockIngredientdetailsone.CreateIngredient("apple", 100, 100, "g", 52, "fruit");
             stockIngredients.Add(stockIngredientdetailsone.Name, stockIngredientdetailsone);
-            stockIngredientdetailstwo.CreateIngredient("banana",150, 150, "g", 134, "fruit");
+            stockIngredientdetailstwo.CreateIngredient("banana", 150, 150, "g", 134, "fruit");
             stockIngredients.Add(stockIngredientdetailstwo.Name, stockIngredientdetailstwo);
-            stockIngredientdetailsthree.CreateIngredient("pineapple",100, 100, "g", 48, "fruit");
+            stockIngredientdetailsthree.CreateIngredient("pineapple", 100, 100, "g", 48, "fruit");
             stockIngredients.Add(stockIngredientdetailsthree.Name, stockIngredientdetailsthree);
             stockSteps.Add("Add the apple to a bowl");
             stockSteps.Add("Add the banana to the bowl");
             stockSteps.Add("Add the pineapple to the bowl");
             stockSteps.Add("Mix all the ingredients and serve");
-            stockRecipe.CreateRecipe("fruit salad",stockIngredients,234,stockSteps);
-            Book.Add("fruit salad",stockRecipe);
+            stockRecipe.CreateRecipe("fruit salad", stockIngredients, 234, stockSteps);
+            Book.Add("fruit salad", stockRecipe);
             //Stock Recipe two
-            astockIngredientdetailsone.CreateIngredient("grated Cheese",2, 2, "cups", 911, "dairy");
+            astockIngredientdetailsone.CreateIngredient("grated Cheese", 2, 2, "cups", 911, "dairy");
             astockIngredients.Add(astockIngredientdetailsone.Name, astockIngredientdetailsone);
-            astockIngredientdetailstwo.CreateIngredient("cake",500, 500, "g", 1485, "starch");
+            astockIngredientdetailstwo.CreateIngredient("cake", 500, 500, "g", 1485, "starch");
             astockIngredients.Add(astockIngredientdetailstwo.Name, astockIngredientdetailstwo);
             astockSteps.Add("Melt the Cheese");
             astockSteps.Add("Pour the melted cheese over the cake");
             astockSteps.Add("Let it cool and serve");
             astockRecipe.CreateRecipe("cheese cake", astockIngredients, 2396, astockSteps);
-            Book.Add("cheese cake",astockRecipe);
+            Book.Add("cheese cake", astockRecipe);
             //User interaction
-            String inpt=""; //the input string will hold the text instructions the user inputs
+            String inpt = ""; //the input string will hold the text instructions the user inputs
             string lok = "";//used in conjunction with inpt when a previous user entry is needed
             while (inpt.ToLower() != "exit")// This will loop until the user types the Exit Command at which point the program will end
             {
                 Console.WriteLine();
                 Console.WriteLine("Please use any of the following comands:");
-                Console.WriteLine("Help, Recipe List, View Recipe, Add Recipe, Scale ('Recipe Name') Delete ('Recipe Name'), Exit");
+                Console.WriteLine("Help, Recipe List, View Recipe, Add Recipe, Scale Recipe Delete Recipe, Exit");
                 inpt = Console.ReadLine().ToLower();
                 if (inpt.ToLower() == "help")
                 {
@@ -316,12 +322,13 @@ namespace PROG2APOEQ1
                     Console.WriteLine("Scale Recipe -> you will be prompted to provide a recipe name then you will be prompted with options to scale the quantity of ingredients in the selected recipe");
                     Console.WriteLine("Delete Recipe -> you will be prompted to provide a recipe name the selected recipe will then be removed from the system");
                     Console.WriteLine("Exit -> Will Shutdown the program closing the comand line interface");
-                }else if (inpt.ToLower() == "recipe list")
+                }
+                else if (inpt.ToLower() == "recipe list")
                 {
                     //the reipe list command displayes all the names of the recipes in the system
                     var sortesDict = Book.OrderBy(KeyValuePair => KeyValuePair.Key);
                     Console.WriteLine("Recipe List:");
-                    foreach(var alph in sortesDict)
+                    foreach (var alph in sortesDict)
                     {
                         Console.WriteLine($"{alph.Key}");
                     }
@@ -346,7 +353,7 @@ namespace PROG2APOEQ1
                     {
                         Console.WriteLine("that is not a recognized recipe name");
                     }
-                    
+
 
 
                 }
@@ -354,9 +361,9 @@ namespace PROG2APOEQ1
                 {
                     //The add recipe Command allows the user ot add their own recipe to the system
                     stockRecipe = userRecipe();
-                    Book.Add(stockRecipe.recipeName,stockRecipe);
+                    Book.Add(stockRecipe.recipeName, stockRecipe);
                 }
-                else if(inpt.ToLower() == "scale recipe")
+                else if (inpt.ToLower() == "scale recipe")
                 {
                     Console.WriteLine("What is the name of the recipe you would like to scale");
                     inpt = Console.ReadLine().ToLower();
@@ -368,7 +375,8 @@ namespace PROG2APOEQ1
                         if (inpt == "half")
                         {
                             Book[lok].ScaleQuant(0.5f);
-                        }else if (inpt == "double")
+                        }
+                        else if (inpt == "double")
                         {
                             Book[lok].ScaleQuant(2f);
                         }
@@ -408,7 +416,7 @@ namespace PROG2APOEQ1
                         Console.WriteLine("That is not a valid scaling factor");
                     }*/
                 }
-                else if( inpt.ToLower() == "delete recipe")
+                else if (inpt.ToLower() == "delete recipe")
                 {
                     //The delete recipe Comand removes a recipe from the book dictionary
                     Console.WriteLine("What is the name of the recipe you would like to view");
@@ -416,7 +424,7 @@ namespace PROG2APOEQ1
                     if (Book.ContainsKey(inpt))
                     {
                         Book.Remove(inpt);
-                        Console.WriteLine(inpt+" Recipe succesfully Removed.");
+                        Console.WriteLine(inpt + " Recipe succesfully Removed.");
                     }
                     else
                     {
@@ -433,10 +441,10 @@ namespace PROG2APOEQ1
                 else
                 {
                     //if the given comand is not recognized the user will be prompted to input a recognized comand
-                    Console.WriteLine(inpt+" is not a recognized comand.");
+                    Console.WriteLine(inpt + " is not a recognized comand.");
                 }
             }
-            
+
         }
     }
 }
