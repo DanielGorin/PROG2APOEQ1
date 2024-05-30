@@ -16,15 +16,28 @@ namespace PROG2APOEQ1
         public string[] IngredientName {  get; set; }
         public float[] IngredientQuant {  get; set; }
         public float[] OrigIngredientQuant { get; set; }
-        public string[] Ingredientmeasure {  get; set; }
+        public string[] IngredientMeasure {  get; set; }
+        public int[] IngredientCal { get; set; }
+        public string[] IngredientFoodGroup { get; set; }
         public int NumberSteps { get; set; }    
         public string[] Steps { get; set; }
         //------------------------ End of Recipe Properties-------------------------------------
-        public void CreateRecipe()
+        public void CreateRecipe(string name, int numIng, string[] ingName, float[] ingQuant, string[] ingMeas, int[] ingCal, string[] ingFood, int numSteps, string[] stps)
         {
         //------------------------ Recipe Constructos -----------------------------------------
+            RecipeName = name;
+            NumberIngredients = numIng;
+            IngredientName = ingName;
+            IngredientQuant = ingQuant;
+            IngredientMeasure = ingMeas;
+            IngredientCal = ingCal;
+            IngredientFoodGroup = ingFood;
+            NumberSteps = numSteps;
+            Steps = stps;
+
+            /*
             Console.WriteLine("What is the title of your recipe?");
-            string quant;
+             string quant;
             try
             {
                 RecipeName = Console.ReadLine();
@@ -80,6 +93,7 @@ namespace PROG2APOEQ1
                 Steps[j] = Console.ReadLine();
             }
             Console.WriteLine("Recipe titled " + RecipeName + " succesfully created.");
+            */
         }
         //---------------------------- End of Recipe Constructors -------------------------
         //---------------------------- Recipe Mehthods -------------------------------------
@@ -92,7 +106,7 @@ namespace PROG2APOEQ1
             Console.WriteLine("Ingredient List:");
             for (int i = 0;i < NumberIngredients; i++)
             {
-                Console.WriteLine((i+1)+". " + IngredientQuant[i]+" " + Ingredientmeasure[i]+" " + IngredientName[i]);
+                Console.WriteLine((i+1)+". " + IngredientQuant[i]+" " + IngredientMeasure[i]+" " + IngredientName[i]);
             }
             Console.WriteLine("Recipe instructions:");
             for (int j = 0;j < NumberSteps; j++)
@@ -108,11 +122,11 @@ namespace PROG2APOEQ1
             for (int i = 0; i < NumberIngredients; i++)
             {
                 //seekingspace and settingspace are for units such as cups or teaspoons Eg 6 cups of suger
-                string seekingspace = ((IngredientQuant[i]).ToString() +" " + Ingredientmeasure[i] +" of " + IngredientName[i]);
-                string settingspace = ((IngredientQuant[i]*scale).ToString() + " " + Ingredientmeasure[i] + " of " + IngredientName[i]);
+                string seekingspace = ((IngredientQuant[i]).ToString() +" " + IngredientMeasure[i] +" of " + IngredientName[i]);
+                string settingspace = ((IngredientQuant[i]*scale).ToString() + " " + IngredientMeasure[i] + " of " + IngredientName[i]);
                 //seekingnospace and settingnospace is for units such as kg or ml Eg 6Kg of cheese
-                string seekingnospace = ((IngredientQuant[i]).ToString() + ""+ Ingredientmeasure[i] + " of " + IngredientName[i]);
-                string settingnospace = ((IngredientQuant[i]*scale).ToString() + "" + Ingredientmeasure[i] + " of " + IngredientName[i]);
+                string seekingnospace = ((IngredientQuant[i]).ToString() + ""+ IngredientMeasure[i] + " of " + IngredientName[i]);
+                string settingnospace = ((IngredientQuant[i]*scale).ToString() + "" + IngredientMeasure[i] + " of " + IngredientName[i]);
                 for (int j = 0; j < NumberSteps; j++)
                 {
                     Steps[j]=Steps[j].Replace(seekingspace, settingspace);
